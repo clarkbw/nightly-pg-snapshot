@@ -1,0 +1,31 @@
+name: Create Staging
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  TABLES: "[pgbench_accounts, pgbench_branches, pgbench_history, pgbench_tellers]"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # - name: Dump schema
+      #   run: |
+      #     pg_dump  --schema-only --lock-wait-timeout=20s $PRODUCTION_DATABASE_URL
+
+      # - name: Load schema
+      #   run: |
+      #     pg_restore -c --if-exists --no-tablespaces $STAGING_DATABASE_URL
+
+      - name: Pipe
+        run: |
+          echo "pg_dump -D -a -t join($TABLES, '-t ')"
+          pg_dump -D -a -t pgbench_accounts -t pgbench_branches -t pgbench_history -t pgbench_tellers -d $PRODUCTION_DATABASE_URL | \
+          pg_restore -c --if-exists --no-tablespaces -d $STAGING_DATABASE_URL
+
+      # - name: Copy data
+      #   run: |
+      #     pg_dump  --schema-only $DATABASE_URL
+      #     psql $DATABASE_URL --command="COPY (SELECT * FROM pgbench_history WHERE tid = 1) TO 'pgbench_history.sql'";
+
