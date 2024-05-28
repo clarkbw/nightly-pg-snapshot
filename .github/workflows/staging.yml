@@ -10,14 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # - name: Dump schema
-      #   run: |
-      #     pg_dump  --schema-only --lock-wait-timeout=20s "$PRODUCTION_DATABASE_URL"
-
-      # - name: Load schema
-      #   run: |
-      #     pg_restore -c --if-exists --no-tablespaces "$STAGING_DATABASE_URL"
-
       - name: Install PostgreSQL 16
         run: |
           sudo apt install -y postgresql-common
@@ -28,9 +20,3 @@ jobs:
       - name: Pipe
         run: |
           pg_dump -Fc -v -t ${{ join(fromJSON(env.TABLES), ' -t ') }} -d ${{ secrets.PRODUCTION_DATABASE_URL }} | pg_restore -v -d ${{ secrets.STAGING_DATABASE_URL }}
-
-      # - name: Copy data
-      #   run: |
-      #     pg_dump  --schema-only $DATABASE_URL
-      #     psql $DATABASE_URL --command="COPY (SELECT * FROM pgbench_history WHERE tid = 1) TO 'pgbench_history.sql'";
-
