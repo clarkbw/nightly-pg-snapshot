@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  TABLES: "[pgbench_accounts, pgbench_branches, pgbench_history, pgbench_tellers]"
+  TABLES: '["pgbench_accounts", "pgbench_branches", "pgbench_history", "pgbench_tellers"]'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,9 +20,9 @@ jobs:
 
       - name: Pipe
         run: |
-          echo "pg_dump -D -a -t ${{ join(env.TABLES, '-t ') }}"
+          echo "pg_dump -D -a -t ${{ join(fromJSON(env.TABLES), '-t ') }}"
           # pg_dump -Fc -v -t pgbench_accounts -t pgbench_branches -t pgbench_history -t pgbench_tellers -d $PRODUCTION_DATABASE_URL | \
-          pg_dump -Fc -v -t ${{ join(env.TABLES, '-t ') }} -d $PRODUCTION_DATABASE_URL | \
+          pg_dump -Fc -v -t  ${{ join(fromJSON(env.TABLES), '-t ') }} -d $PRODUCTION_DATABASE_URL | \
           pg_restore -c --if-exists --no-tablespaces -d $STAGING_DATABASE_URL
 
       # - name: Copy data
