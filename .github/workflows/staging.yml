@@ -21,4 +21,4 @@ jobs:
 
       - name: Pipe
         run: |
-          pg_dump -Fc -v -t ${{ join(fromJSON(env.TABLES), ' -t ') }} -d ${{ secrets.PRODUCTION_DATABASE_URL }} | pg_restore -v -d ${{ secrets.STAGING_DATABASE_URL }}
+          pg_dump -Fc -v -t ${{ join(fromJSON(env.TABLES), ' -t ') }} -d ${{ secrets.PRODUCTION_DATABASE_URL }} | pg_restore -v -C --no-owner --no-acl --clean --if-exists -d ${{ secrets.STAGING_DATABASE_URL }}
