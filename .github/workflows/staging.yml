@@ -12,18 +12,17 @@ jobs:
     steps:
       # - name: Dump schema
       #   run: |
-      #     pg_dump  --schema-only --lock-wait-timeout=20s $PRODUCTION_DATABASE_URL
+      #     pg_dump  --schema-only --lock-wait-timeout=20s "$PRODUCTION_DATABASE_URL"
 
       # - name: Load schema
       #   run: |
-      #     pg_restore -c --if-exists --no-tablespaces $STAGING_DATABASE_URL
+      #     pg_restore -c --if-exists --no-tablespaces "$STAGING_DATABASE_URL"
 
       - name: Pipe
         run: |
-          echo "pg_dump -D -a -t ${{ join(fromJSON(env.TABLES), '-t ') }}"
-          # pg_dump -Fc -v -t pgbench_accounts -t pgbench_branches -t pgbench_history -t pgbench_tellers -d $PRODUCTION_DATABASE_URL | \
-          pg_dump -Fc -v -t  ${{ join(fromJSON(env.TABLES), '-t ') }} -d $PRODUCTION_DATABASE_URL | \
-          pg_restore -c --if-exists --no-tablespaces -d $STAGING_DATABASE_URL
+          echo "pg_dump -D -a -t ${{ join(fromJSON(env.TABLES), ' -t ') }}"
+          pg_dump -Fc -v -t ${{ join(fromJSON(env.TABLES), ' -t ') }} -d "$PRODUCTION_DATABASE_URL" | \
+          pg_restore -c --if-exists --no-tablespaces -d "$STAGING_DATABASE_URL"
 
       # - name: Copy data
       #   run: |
