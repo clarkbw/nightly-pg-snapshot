@@ -18,6 +18,13 @@ jobs:
       #   run: |
       #     pg_restore -c --if-exists --no-tablespaces "$STAGING_DATABASE_URL"
 
+      - name: Install PostgreSQL 16
+        run: |
+          sudo apt install -y postgresql-common
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+          sudo apt-get install -y postgresql-client-16
+          echo "/usr/lib/postgresql/16/bin" >> $GITHUB_PATH
+
       - name: Pipe
         run: |
           pg_dump -Fc -v -t ${{ join(fromJSON(env.TABLES), ' -t ') }} -d ${{ secrets.PRODUCTION_DATABASE_URL }} | pg_restore -v -d ${{ secrets.STAGING_DATABASE_URL }}
