@@ -21,7 +21,8 @@ jobs:
       - name: Pipe
         run: |
           echo "pg_dump -D -a -t join($TABLES, '-t ')"
-          pg_dump -D -a -t pgbench_accounts -t pgbench_branches -t pgbench_history -t pgbench_tellers -d $PRODUCTION_DATABASE_URL | \
+          # pg_dump -Fc -v -t pgbench_accounts -t pgbench_branches -t pgbench_history -t pgbench_tellers -d $PRODUCTION_DATABASE_URL | \
+          pg_dump -Fc -v -t join($TABLES, '-t ') -d $PRODUCTION_DATABASE_URL | \
           pg_restore -c --if-exists --no-tablespaces -d $STAGING_DATABASE_URL
 
       # - name: Copy data
